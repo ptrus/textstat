@@ -1,4 +1,6 @@
-textstat
+Fork of textstat with small changes for personal use
+
+old readme:
 ========
 
 Python package to calculate statistics from text, which helps to decide readability, complexity and grade level of a particular corpus.

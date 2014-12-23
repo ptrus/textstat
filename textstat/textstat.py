@@ -2,12 +2,13 @@ import string
 import re
 import math
 import operator
+from word_list import easy
 
 
 class textstatistics:
 
         def __init__(self):
-                return None
+            	return None
 
         def charcount(self, text, ignore_spaces=True):
                 if ignore_spaces:
@@ -25,7 +26,7 @@ class textstatistics:
                 count = 0
                 vowels = 'aeiouy'
                 text = text.lower().strip(".:;?!)(")
-                if text[0] in vowels:
+                if text and text[0] in vowels:
                     count += 1
                 for index in range(1, len(text)):
                     if text[index] in vowels and text[index-1] not in vowels:
@@ -135,7 +136,7 @@ class textstatistics:
 
         def difficult_words(self, text):
                 text_list = text.split()
-                filename = open('textstat/easy_word_list').read().split()
+                filename = easy.list()
                 diff_words = []
                 for value in text_list:
                         if value not in filename:
@@ -162,7 +163,7 @@ class textstatistics:
                 grade = 0.4*(self.avg_sentence_length(text) + per_diff_words)
                 return grade
 
-        def text_standard(self, text):
+        def readability_consensus(self, text):
                 grade = []
                 ################################################ Appending Flesch Kincaid Grade ########################################################################
                 lower = round(self.flesch_kincaid_grade(text))
@@ -189,10 +190,11 @@ class textstatistics:
                 else:
                         grade.append(13)
                 ###################################################### Appending SMOG Index ########################################################################
-                lower = round(self.smog_index(text))
-                upper = math.ceil(self.smog_index(text))
-                grade.append(int(lower))
-                grade.append(int(upper))
+                if (self.sentence_count(text) >= 3):
+                    lower = round(self.smog_index(text))
+                    upper = math.ceil(self.smog_index(text))
+                    grade.append(int(lower))
+                    grade.append(int(upper))
                 ################################################ Appending Coleman_Liau_Index ########################################################################
                 lower = round(self.coleman_liau_index(text))
                 upper = math.ceil(self.coleman_liau_index(text))
@@ -223,6 +225,9 @@ class textstatistics:
                 sorted_x = sorted(d.iteritems(), key=operator.itemgetter(1))
                 final_grade = str((sorted_x)[len(sorted_x)-1])
                 score = final_grade.split(',')[0].strip('(')
-                return str(int(score)-1) + "th " + "and " + str(int(score)) + "th grade"
+                for i in range(len(grade)):
+                    grade[i] = 13 if grade[i] > 13 else grade[i] 
+                return sum(grade)/float(len(grade))
 
 textstat = textstatistics()
+
